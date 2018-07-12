@@ -1,14 +1,12 @@
-
 //
 //  OPDataResponse.m
 //  OPNetAdapter
 //
-//  Created by sunguanglei on 15/5/19.
-//  Copyright (c) 2015年 sunix. All rights reserved.
+//  Created by sunboshi on 2018/7/5.
+//  Copyright © 2018年 sunobshi.tech. All rights reserved.
 //
 
 #import "OPDataResponse.h"
-#import "Mantle.h"
 
 @implementation OPDataResponse
 
@@ -31,10 +29,7 @@
                 NSError *error = nil;
                 if (OPDataResponseTypeDefault == responseType) {
                     //这儿需要做些特殊处理  如果出现这种情况 {"code":1,"data":"","msg":"暂无符合条件的查询结果"}  data 是一个字符串的情况
-                    
                     self.data = [MTLJSONAdapter modelOfClass:dataModelClass fromJSONDictionary:response[@"data"] error:&error];
-                 
-                    
                 }
                 else if (OPDataResponseTypeList == responseType) {
                     self.data = [MTLJSONAdapter modelsOfClass:dataModelClass fromJSONArray:response[@"data"] error:&error];
@@ -48,7 +43,7 @@
             }
         }
         @catch (NSException *exception) {
-            self.error = [NSError errorWithDomain:@"cn.sunix.opnetadapter" code:1001 userInfo:@{NSLocalizedDescriptionKey:@"Response data format error.", NSLocalizedFailureReasonErrorKey:@"Response data format error."}];
+            self.error = [NSError errorWithDomain:@"tech.sunboshi.opnetadapter" code:1001 userInfo:@{NSLocalizedDescriptionKey:@"Response data format error.", NSLocalizedFailureReasonErrorKey:@"Response data format error."}];
         }
         @finally {
             //
