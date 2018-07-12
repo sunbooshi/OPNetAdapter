@@ -4,7 +4,7 @@
 
 大致的思路是一个接口对应于一个OPDataRequest，而一个OPDataRequest对应一个Model，而返回数据的解析是通过OPDataResponse。
 
-以GitHub的https://api.github.com/users/接口为例，这个接口的有一个参数是用户名。因为GitHub的接口是RESTFul风格的，而我们之前的接口还是比较传统的后面跟了一堆`?xxx=yyy&aaa=bbb`这种，如果是这种形式的URL，那需要实现`- (NSDictionary *)parametersMap;`。而GitHub这种形式的话，只要在`- (void)prepareForRequest;`中拼接`path`即可。
+以GitHub的 https://api.github.com/users/ 接口为例，这个接口的有一个参数是用户名。因为GitHub的接口是RESTFul风格的，而我们之前的接口还是比较传统的后面跟了一堆`?xxx=yyy&aaa=bbb`这种，如果是这种形式的URL，那需要实现`- (NSDictionary *)parametersMap;`。而GitHub这种形式的话，只要在`- (void)prepareForRequest;`中拼接`path`即可。
 
 ```objective-c
 - (void)prepareForRequest {
@@ -16,7 +16,7 @@
 
 OPDataResponse主要任务是解析返回数据，它应对的是接口返回的JSON数据的表现形式，比如是列表或者单一的对象，或者是某种格式，比如：
 
-```json
+```
 { 
 	“code” ：0, 
 	“message”: “success”, 
