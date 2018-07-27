@@ -9,14 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "OPDataResponse.h"
 #import <AFNetworking/AFNetworking.h>
-#define OPQueryParameters
-#define OPUriParameters
-#define OPFormParameters
 
-#define OPGetRequest    /** Get 请求 */
-#define OPPostRequest   /** Post请求 */
-#define OPPutRequest    /** Put 请求 */
-#define OPDeleteRequest /** Delete请求 */
 
 @interface OPDataRequest : NSObject
 
@@ -35,6 +28,11 @@
  */
 @property (nonatomic, strong) NSDictionary *params;
 
+/**
+ *  Request timeout
+ */
+@property (nonatomic, assign) NSTimeInterval timeout;
+
 + (instancetype)reqeust;
 
 - (NSDictionary *)parametersMap;
@@ -46,16 +44,16 @@
 - (void)prepareForRequest;
 - (void)readyForRequest;
 
-- (void)getWithSuccess:(void (^)(OPDataResponse *responseObject))success
+- (nullable NSURLSessionDataTask *)getWithSuccess:(void (^)(OPDataResponse *responseObject))success
                 failure:(void (^)(NSError *error))failure;
 
-- (void)postWithSuccess:(void (^)(OPDataResponse * responseObject))success
+- (nullable NSURLSessionDataTask *)postWithSuccess:(void (^)(OPDataResponse * responseObject))success
                 failure:(void (^)(NSError *error))failure;
 
-- (void)putWithSuccess:(void (^)(OPDataResponse * responseObject))success
+- (nullable NSURLSessionDataTask *)putWithSuccess:(void (^)(OPDataResponse * responseObject))success
                 failure:(void (^)(NSError *error))failure;
 
-- (void)deleteWithSuccess:(void (^)(OPDataResponse * responseObject))success
+- (nullable NSURLSessionDataTask *)deleteWithSuccess:(void (^)(OPDataResponse * responseObject))success
                 failure:(void (^)(NSError *error))failure;
 
 

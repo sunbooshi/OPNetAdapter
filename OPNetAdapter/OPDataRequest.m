@@ -17,6 +17,17 @@
     return [[[self class] alloc] init];
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    
+    if (self) {
+        self.timeout = OPRequstTimeoutInterval;
+    }
+    
+    return self;
+}
+
 - (NSDictionary *)parametersMap
 {
     return nil;
@@ -74,7 +85,7 @@
     NSAssert(self.domain != nil , @"Domain can't be nil.");
     NSAssert(self.path != nil, @"Path can't be nil.");
     
-    NSString *encodedUrl = [self.path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString *encodedUrl = [self.path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *url = [NSString stringWithFormat:@"%@%@", self.domain, encodedUrl];
     return url;
 }
@@ -91,7 +102,7 @@
     return manager;
 }
 
-- (void)getWithSuccess:(void (^)(OPDataResponse *responseObject))success
+- (nullable NSURLSessionDataTask *)getWithSuccess:(void (^)(OPDataResponse *responseObject))success
                failure:(void (^)(NSError *error))failure
 {
     [self prepareForRequest];
@@ -102,12 +113,12 @@
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manager.requestSerializer.timeoutInterval = OPRequstTimeoutInterval;
+    manager.requestSerializer.timeoutInterval = self.timeout;
     
     
     [self readyForRequest];
-    
-    [manager GET:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
+
+    return [manager GET:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) success([self getResponseParser:responseObject]);
@@ -115,10 +126,9 @@
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
     }];
-    
 }
 
-- (void)postWithSuccess:(void (^)(OPDataResponse *responseObject))success
+- (nullable NSURLSessionDataTask *)postWithSuccess:(void (^)(OPDataResponse *responseObject))success
                 failure:(void (^)(NSError *error))failure
 {
     [self prepareForRequest];
@@ -129,11 +139,12 @@
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manager.requestSerializer.timeoutInterval = OPRequstTimeoutInterval;
+    manager.requestSerializer.timeoutInterval = self.timeout;
     
     
     [self readyForRequest];
-    [manager POST:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
+    
+    return [manager POST:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) success([self getResponseParser:responseObject]);
@@ -143,7 +154,7 @@
     }];
 }
 
-- (void)putWithSuccess:(void (^)(OPDataResponse *responseObject))success
+- (nullable NSURLSessionDataTask *)putWithSuccess:(void (^)(OPDataResponse *responseObject))success
                failure:(void (^)(NSError *error))failure
 {
     [self prepareForRequest];
@@ -154,19 +165,19 @@
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manager.requestSerializer.timeoutInterval = OPRequstTimeoutInterval;
+    manager.requestSerializer.timeoutInterval = self.timeout;
     
     
     [self readyForRequest];
-    [manager PUT:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    
+    return [manager PUT:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) success([self getResponseParser:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
     }];
-    
 }
 
-- (void)deleteWithSuccess:(void (^)(OPDataResponse *responseObject))success
+- (nullable NSURLSessionDataTask *)deleteWithSuccess:(void (^)(OPDataResponse *responseObject))success
                   failure:(void (^)(NSError *error))failure
 {
     [self prepareForRequest];
@@ -178,17 +189,17 @@
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manager.requestSerializer.timeoutInterval = OPRequstTimeoutInterval;
+    manager.requestSerializer.timeoutInterval = self.timeout;
     
     
     [self readyForRequest];
-    [manager DELETE:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    
+    return [manager DELETE:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (success) success([self getResponseParser:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
         
     }];
-    
 }
 
 
