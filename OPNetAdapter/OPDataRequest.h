@@ -33,6 +33,8 @@
  */
 @property (nonatomic, assign) NSTimeInterval timeout;
 
+@property (nonatomic, assign) NSURLRequestCachePolicy cachePolicy;
+
 + (instancetype)reqeust;
 
 - (NSDictionary *)parametersMap;
