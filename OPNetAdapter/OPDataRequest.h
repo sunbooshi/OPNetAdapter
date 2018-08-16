@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OPDataResponse.h"
 #import <AFNetworking/AFNetworking.h>
+#import "OPDataRequestConfig.h"
+#import "OPDataResponse.h"
 
 
 @interface OPDataRequest : NSObject
