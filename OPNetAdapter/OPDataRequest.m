@@ -147,7 +147,7 @@
     return [manager POST:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (success) success([self getResponseParser:responseObject]);
+        if (success) success([self postResponseParser:responseObject]);
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
@@ -173,7 +173,7 @@
     [self readyForRequest];
     
     return [manager PUT:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (success) success([self getResponseParser:responseObject]);
+        if (success) success([self putResponseParser:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
     }];
@@ -197,7 +197,7 @@
     [self readyForRequest];
     
     return [manager DELETE:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (success) success([self getResponseParser:responseObject]);
+        if (success) success([self deleteResponseParser:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (failure) failure(error);
         
