@@ -47,6 +47,9 @@
 - (void)prepareForRequest;
 - (void)readyForRequest;
 
+- (NSString *)url;
+- (AFHTTPSessionManager *)manger;
+
 - (nullable NSURLSessionDataTask *)getWithSuccess:(void (^)(OPDataResponse *responseObject))success
                 failure:(void (^)(NSError *error))failure;
 

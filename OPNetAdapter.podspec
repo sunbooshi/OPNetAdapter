@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'OPNetAdapter'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Used for auto generate codes.'
 
   s.description      = <<-DESC
@@ -15,7 +15,7 @@ Used for auto generate codes, base on AFNetworking and Mantle.
   s.ios.deployment_target = '8.0'
 
   s.source_files = 'OPNetAdapter/*'
-  
+
   s.dependency 'AFNetworking', '~> 3.0'
   s.dependency 'Mantle'
 
