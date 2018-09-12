@@ -10,6 +10,13 @@
 
 #define OPRequstTimeoutInterval 180.0
 
+@interface OPDataRequest()
+
+// use for debug
+@property (nonatomic, strong) NSString *httpMethod;
+
+@end
+
 @implementation OPDataRequest
 
 + (instancetype)reqeust
@@ -108,14 +115,16 @@
     [self prepareForRequest];
     NSString *url = [self url];
     
-    
+    self.httpMethod = @"GET";
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
-    
-    
+    if (self.cachePolicy) {
+        manager.requestSerializer.cachePolicy = self.cachePolicy;
+    }
+
     [self readyForRequest];
 
     return [manager GET:url parameters:self.params progress:^(NSProgress * _Nonnull downloadProgress) {
@@ -135,6 +144,7 @@
     
     NSString *url = [self url];
     
+    self.httpMethod = @"POST";
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
@@ -161,15 +171,13 @@
     
     NSString *url = [self url];
     
+    self.httpMethod = @"PUT";
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
-    if (self.cachePolicy) {
-        manager.requestSerializer.cachePolicy = self.cachePolicy;
-    }
-    
+
     [self readyForRequest];
     
     return [manager PUT:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -186,14 +194,13 @@
     
     NSString *url = [self url];
     
+    self.httpMethod = @"DELETE";
     self.params = [self buildParameters];
-    
-    
+
     AFHTTPSessionManager *manager = [self manger];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
-    
-    
+
     [self readyForRequest];
     
     return [manager DELETE:url parameters:self.params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -223,6 +230,73 @@
 - (OPDataResponse *)deleteResponseParser:(id)response
 {
     return [[OPDataResponse alloc] initWithResponse:response];
+}
+
+- (NSString *)description
+{
+    return [self debugDescription];
+}
+
+- (NSString *)debugDescription
+{
+    NSMutableString *desc = [NSMutableString stringWithFormat:@"------ %@ ------\n", NSStringFromClass([self class])];
+    
+    NSString *url = [[self url] copy];
+    [desc appendFormat:@"->url      : %@\n", url];
+    
+    [desc appendFormat:@"->type     : %@\n", self.httpMethod];
+    
+    [desc appendFormat:@"->header   :\n"];
+    
+    NSMutableString *headerStr = [[NSMutableString alloc] initWithString:@""];
+    NSDictionary *headers = [self headerVaules];
+    for (NSString *filed in [headers allKeys]) {
+        [desc appendFormat:@"\t %@ : %@\n", filed, headers[filed]];
+        [headerStr appendFormat:@"-H \"%@: %@\" ", filed, headers[filed]];
+    }
+    
+    [desc appendString:@"->paramters: \n"];
+    NSDictionary *requestParameters = [self buildParameters];
+    NSArray *keys = [requestParameters allKeys];
+    for (NSString *key in keys) {
+        [desc appendFormat:@"\t %@ : %@\n", key, requestParameters[key]];
+    }
+    
+    NSString *cmd;
+    
+    NSString *charactersToEscape = @"?!@#$^&%*+,:;='\"`<>()[]{}/\\| ";
+    NSCharacterSet *allowedCharacters = [[NSCharacterSet characterSetWithCharactersInString:charactersToEscape] invertedSet];
+    
+    NSMutableString *params = [[NSMutableString alloc] init];
+    NSMutableString *postParams = [[NSMutableString alloc] init];
+    if ([keys count] > 1) {
+        for (int i = 0; i < [keys count]; i++) {
+            NSString *key = keys[i];
+            NSString *val = [NSString stringWithFormat:@"%@", requestParameters[key]];
+            NSString *kv = [NSString stringWithFormat:@"%@=%@", key, [val stringByAddingPercentEncodingWithAllowedCharacters:allowedCharacters]];
+            [params appendString:kv];
+            [postParams appendFormat:@"-d \"%@\" ", kv];
+            if (i < [keys count] - 1) {
+                [params appendString:@"&"];
+            }
+        }
+    }
+    if ([self.httpMethod isEqualToString:@"GET"]) {
+        cmd = [NSString stringWithFormat:@"curl -v %@ \"%@?%@\"", headerStr, url, params];
+    }
+    else if ([self.httpMethod isEqualToString:@"POST"]){
+        cmd = [NSString stringWithFormat:@"curl -v %@ %@ \"%@\"", headerStr, postParams, url];
+    }
+    else if ([self.httpMethod isEqualToString:@"PUT"]){
+        cmd = [NSString stringWithFormat:@"curl -v %@ -X PUT %@ \"%@\"", headerStr, postParams, url];
+    }
+    else if ([self.httpMethod isEqualToString:@"DELETE"]){
+        cmd = [NSString stringWithFormat:@"curl -v %@ -X DELETE %@ \"%@\"", headerStr, postParams, url];
+    }
+    
+    [desc appendString:@"->curl cmd :\n"];
+    [desc appendString:cmd];
+    return desc;
 }
 
 @end
