@@ -7,6 +7,7 @@
 //
 
 #import "OPDataResponse.h"
+#import <Mantle/Mantle.h>
 
 @interface GithubResponse : OPDataResponse
 
