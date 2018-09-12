@@ -28,7 +28,7 @@
     static dispatch_once_t onceToken;
     static OPDataRequestConfig *defaultConfig;
     dispatch_once(&onceToken, ^{
-        defaultConfig = [[OPDataRequestConfig alloc] init];
+        defaultConfig = [[self.class alloc] init];
     });
     
     return defaultConfig;
