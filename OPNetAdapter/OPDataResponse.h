@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <Mantle.h>
 
 typedef enum : NSUInteger {
     OPDataResponseTypeDefault,

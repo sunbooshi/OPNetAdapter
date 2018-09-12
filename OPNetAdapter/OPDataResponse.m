@@ -27,17 +27,15 @@
             }
             else {
                 NSError *error = nil;
+                // TODO: Write your own parser. 这里需要根据自己服务端的数据进行处理
                 if (OPDataResponseTypeDefault == responseType) {
-                    //这儿需要做些特殊处理  如果出现这种情况 {"code":1,"data":"","msg":"暂无符合条件的查询结果"}  data 是一个字符串的情况
-                    self.data = [MTLJSONAdapter modelOfClass:dataModelClass fromJSONDictionary:response[@"data"] error:&error];
+                    self.data = response;
                 }
                 else if (OPDataResponseTypeList == responseType) {
-                    self.data = [MTLJSONAdapter modelsOfClass:dataModelClass fromJSONArray:response[@"data"] error:&error];
+                    self.data = response;
                 }
                 else if (OPDataResponseTypePage == responseType) {
-                    NSDictionary *pageData = response[@"data"];
-                    self.data = [MTLJSONAdapter modelsOfClass:dataModelClass fromJSONArray:pageData[@"list"] error:&error];
-                    self.extraData = [self extraPageInfo:pageData];
+                    self.data = response;
                 }
                 self.error = error;
             }
@@ -52,13 +50,18 @@
     return self;
 }
 
-- (NSDictionary *)extraPageInfo:(NSDictionary *)pageData
-{
-    NSMutableDictionary *pageInfo = [NSMutableDictionary dictionaryWithDictionary:pageData];
-    if (pageInfo[@"list"]) {
-        [pageInfo removeObjectForKey:@"list"];
-    }
-    return [NSDictionary dictionaryWithDictionary:pageInfo];
+- (NSString *)description {
+    NSMutableString *desc = [NSMutableString stringWithFormat:@"-------- %@ --------\n", NSStringFromClass([self class])];
+    [desc appendFormat:@"code: %ld\n", self.code];
+    [desc appendFormat:@"msg : %@\n", self.msg.length == 0 ? @"" : self.msg];
+    [desc appendFormat:@"err : %@\n", self.error == nil ? @"" : self.error];
+    [desc appendFormat:@"data: %@\n", self.data == nil ? @"" : self.data];
+    [desc appendString:@"--------------------\n"];
+    return desc;
+}
+
+- (NSString *)debugDescription {
+    return [self description];
 }
 
 @end
