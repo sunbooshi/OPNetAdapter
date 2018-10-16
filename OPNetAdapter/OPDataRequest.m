@@ -119,7 +119,6 @@
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
     if (self.cachePolicy) {
         manager.requestSerializer.cachePolicy = self.cachePolicy;
@@ -148,7 +147,6 @@
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
     
     
@@ -175,7 +173,6 @@
     self.params = [self buildParameters];
     
     AFHTTPSessionManager *manager = [self manger];
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
 
     [self readyForRequest];
@@ -198,7 +195,6 @@
     self.params = [self buildParameters];
 
     AFHTTPSessionManager *manager = [self manger];
-    manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.requestSerializer.timeoutInterval = self.timeout;
 
     [self readyForRequest];
