@@ -20,6 +20,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    [OPDataRequestConfig setHttpProxy:@"localhost" port:1080];
+    [OPDataRequestConfig setHttpProxyEnable:YES];
+    
     UserRequest *req = [[UserRequest alloc] init];
     req.username = @"octocat";
     __weak typeof(self) weakself = self;

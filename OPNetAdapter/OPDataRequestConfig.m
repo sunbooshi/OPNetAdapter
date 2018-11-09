@@ -11,6 +11,9 @@
 @interface OPDataRequestConfig()
 
 @property (nonatomic, assign) OPDataRequestConfigEnv environment;
+@property (nonatomic, assign) BOOL proxyEnable;
+@property (nonatomic, copy) NSString *proxyHost;
+@property (nonatomic, assign) NSInteger proxyPort;
 
 @end
 
@@ -20,6 +23,7 @@
     self = [super init];
     if (self) {
         self.environment = OPDataRequestConfigEnvDev;
+        self.proxyEnable = NO;
     }
     return self;
 }
@@ -41,5 +45,53 @@
 + (OPDataRequestConfigEnv)env {
     return [OPDataRequestConfig defaultConfig].environment;
 }
+
++ (BOOL)isDev {
+    return [OPDataRequestConfig env] == OPDataRequestConfigEnvDev;
+}
+
++ (BOOL)isTest {
+    return [OPDataRequestConfig env] == OPDataRequestConfigEnvTest;
+}
+
++ (BOOL)isPre {
+    return [OPDataRequestConfig env] == OPDataRequestConfigEnvPre;
+}
+
++ (BOOL)isProd {
+    return [OPDataRequestConfig env] == OPDataRequestConfigEnvProd;
+}
+
++ (void)setHttpProxyEnable:(BOOL)enable {
+    [OPDataRequestConfig defaultConfig].proxyEnable = enable;
+}
+
++ (void)setHttpProxy:(NSString *)host port:(NSInteger)port {
+    [OPDataRequestConfig defaultConfig].proxyHost = host;
+    [OPDataRequestConfig defaultConfig].proxyPort = port;
+}
+
++ (NSDictionary *)connectionProxyDictionary {
+    if (![OPDataRequestConfig defaultConfig].proxyEnable) {
+        return nil;
+    }
+    
+    NSString *host = [OPDataRequestConfig defaultConfig].proxyHost;
+    NSInteger port = [OPDataRequestConfig defaultConfig].proxyPort;
+    if (host == nil || host.length == 0) {
+        return nil;
+    }
+    
+    if (port <= 0) {
+        return nil;
+    }
+    
+    return @{
+             (NSString *)kCFNetworkProxiesHTTPEnable: @(YES),
+             (NSString *)kCFNetworkProxiesHTTPProxy: host,
+             (NSString *)kCFNetworkProxiesHTTPPort: @(port)
+             };
+}
+
 
 @end

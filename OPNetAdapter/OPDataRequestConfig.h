@@ -12,7 +12,7 @@ typedef enum : NSUInteger {
     OPDataRequestConfigEnvDev,
     OPDataRequestConfigEnvTest,
     OPDataRequestConfigEnvPre,
-    OPDataRequestConfigEnvPro
+    OPDataRequestConfigEnvProd
 } OPDataRequestConfigEnv;
 
 @interface OPDataRequestConfig : NSObject
@@ -20,5 +20,12 @@ typedef enum : NSUInteger {
 + (instancetype)defaultConfig;
 + (void)setEnv:(OPDataRequestConfigEnv)env;
 + (OPDataRequestConfigEnv)env;
++ (BOOL)isDev;
++ (BOOL)isTest;
++ (BOOL)isPre;
++ (BOOL)isProd;
++ (void)setHttpProxyEnable:(BOOL)enable;
++ (void)setHttpProxy:(NSString *)host port:(NSInteger)port;
++ (NSDictionary *)connectionProxyDictionary;
 
 @end

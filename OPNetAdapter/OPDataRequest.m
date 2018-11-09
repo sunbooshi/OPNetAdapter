@@ -99,7 +99,18 @@
 
 - (AFHTTPSessionManager *)manger
 {
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    AFHTTPSessionManager *manager = nil;
+    
+    NSDictionary *connectionProxyDictionary = [OPDataRequestConfig connectionProxyDictionary];
+    if (connectionProxyDictionary) {
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        config.connectionProxyDictionary = connectionProxyDictionary;
+        manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:config];
+    }
+    else {
+        manager = [AFHTTPSessionManager manager];
+    }
+    
     manager.responseSerializer.acceptableContentTypes = [self acceptableContentTypes];
     NSDictionary *headers = [self headerVaules];
     for (NSString *filed in [headers allKeys]) {
