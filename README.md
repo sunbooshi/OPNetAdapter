@@ -32,7 +32,7 @@ OPDataResponse主要任务是解析返回数据，它应对的是接口返回的
 
 ### Updated[2018-11-09]
 
-增加了HTTP代理设置，可以配合[MockServer](http://www.mock-server.com)进行数据Mock。
+增加了HTTP代理设置（**不支持HTTPS协议**），可以配合[MockServer](http://www.mock-server.com)进行数据Mock。
 
 使用说明：
 
