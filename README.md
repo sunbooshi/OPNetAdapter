@@ -29,3 +29,26 @@ OPDataResponse主要任务是解析返回数据，它应对的是接口返回的
 目前在我们的项目中实现了请求和模型的自动生成，我在用GitHub做样例的时候也验证了灵活性。但是其中不少细节还需要进一步优化，所以这个项目主要是起一个参考作用，给大家提供一个思路，接下来还会继续演化。现在想到的是，定义成Protocol，然后OPDataRequest作为具体实现。如果用Swift直接使用Extension来默认实现Protocol就行，会更加方便。作为Protocol的话，会更加灵活。
 
 另外，还会把自动生成代码的部分添加进来，考虑大多数公司的情况，自动代码生成部分会额外做成一个小工具，适用更多场景。
+
+### Updated[2018-11-09]
+
+增加了HTTP代理设置，可以配合[MockServer](http://www.mock-server.com)进行数据Mock。
+
+使用说明：
+
+首先启动MockServer，
+
+```
+java -jar mockserver-netty-5.4.1-jar-with-dependencies.jar -serverPort 1080 -logLevel INFO
+```
+
+然后在代码中启用HTTP代理，
+
+```
+[OPDataRequestConfig setHttpProxy:@"localhost" port:1080];
+[OPDataRequestConfig setHttpProxyEnable:YES];
+```
+
+> 注意上面的设置仅适用于模拟器，如果使用真机，需要确保真机与电脑在同一局域网，然后将localhost改为电脑的IP地址。
+
+关于MockServer的使用请详见其官方网站，可以使用我写的这个简易网页[客户端](https://gist.github.com/sunboshi/8315c34e18213eb769456720d4d6dfa5)创建Mock数据。
