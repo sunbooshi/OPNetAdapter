@@ -12,6 +12,7 @@
 
 @interface OPDataRequest()
 
+@property (nonatomic, strong) AFHTTPSessionManager *sessionManager;
 // use for debug
 @property (nonatomic, strong) NSString *httpMethod;
 
@@ -33,6 +34,14 @@
     }
     
     return self;
+}
+
+- (void)dealloc {
+    // 避免NSURLSessions、AFURLSessionManager产生循环引用
+    // NSURLSession retains its delegate (i.e. AFURLSessionManager).
+    // Call invalidateSessionCancelingTasks: to ensure that sessions finalize and release their delegate.
+    [self.sessionManager invalidateSessionCancelingTasks:YES];
+    self.sessionManager = nil;
 }
 
 - (NSDictionary *)parametersMap
@@ -99,6 +108,11 @@
 
 - (AFHTTPSessionManager *)manger
 {
+    // 避免重复创建
+    if (self.sessionManager) {
+        return self.sessionManager;
+    }
+    
     AFHTTPSessionManager *manager = nil;
     
     NSDictionary *connectionProxyDictionary = [OPDataRequestConfig connectionProxyDictionary];
@@ -117,6 +131,7 @@
         [manager.requestSerializer setValue:headers[filed] forHTTPHeaderField:filed];
     }
     
+    self.sessionManager = manager;
     return manager;
 }
 
